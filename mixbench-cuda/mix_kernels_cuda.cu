@@ -14,6 +14,7 @@
 #define COMP_ITERATIONS (8192)
 #define UNROLL_ITERATIONS (32)
 #define REGBLOCK_SIZE (8)
+#define NUM_ITERATIONS (1000)
 
 #define UNROLLED_MEMORY_ACCESSES (UNROLL_ITERATIONS/2)
 
@@ -207,27 +208,27 @@ void runbench(double *cd, long size, bool doHalfs){
 	benchmark_func< int, BLOCK_SIZE, memory_ratio, true ><<< dimGrid, dimBlock >>>(1, (int*)cd);
 	float kernel_time_mad_int = finalizeEvents(start, stop);
 
-	const double memaccesses_ratio = (double)(memory_ratio)/UNROLL_ITERATIONS;
-	const double computations_ratio = 1.0-memaccesses_ratio;
+// 	const double memaccesses_ratio = (double)(memory_ratio)/UNROLL_ITERATIONS;
+// 	const double computations_ratio = 1.0-memaccesses_ratio;
 
-	printf("         %4d,   %8.3f,%8.2f,%8.2f,%7.2f,   %8.3f,%8.2f,%8.2f,%7.2f,   %8.3f,%8.2f,%8.2f,%7.2f,  %8.3f,%8.2f,%8.2f,%7.2f\n",
-		UNROLL_ITERATIONS-memory_ratio,
-		(computations_ratio*(double)computations)/(memaccesses_ratio*(double)memoryoperations*sizeof(float)),
-		kernel_time_mad_sp,
-		(computations_ratio*(double)computations)/kernel_time_mad_sp*1000./(double)(1000*1000*1000),
-		(memaccesses_ratio*(double)memoryoperations*sizeof(float))/kernel_time_mad_sp*1000./(1000.*1000.*1000.),
-		(computations_ratio*(double)computations)/(memaccesses_ratio*(double)memoryoperations*sizeof(double)),
-		kernel_time_mad_dp,
-		(computations_ratio*(double)computations)/kernel_time_mad_dp*1000./(double)(1000*1000*1000),
-		(memaccesses_ratio*(double)memoryoperations*sizeof(double))/kernel_time_mad_dp*1000./(1000.*1000.*1000.),
-		(computations_ratio*(double)2*computations)/(memaccesses_ratio*(double)memoryoperations*sizeof(half2)),
-		kernel_time_mad_hp,
-		(computations_ratio*(double)2*computations)/kernel_time_mad_hp*1000./(double)(1000*1000*1000),
-		(memaccesses_ratio*(double)memoryoperations*sizeof(half2))/kernel_time_mad_hp*1000./(1000.*1000.*1000.),
-		(computations_ratio*(double)computations)/(memaccesses_ratio*(double)memoryoperations*sizeof(int)),
-		kernel_time_mad_int,
-		(computations_ratio*(double)computations)/kernel_time_mad_int*1000./(double)(1000*1000*1000),
-		(memaccesses_ratio*(double)memoryoperations*sizeof(int))/kernel_time_mad_int*1000./(1000.*1000.*1000.) );
+// 	printf("         %4d,   %8.3f,%8.2f,%8.2f,%7.2f,   %8.3f,%8.2f,%8.2f,%7.2f,   %8.3f,%8.2f,%8.2f,%7.2f,  %8.3f,%8.2f,%8.2f,%7.2f\n",
+// 		UNROLL_ITERATIONS-memory_ratio,
+// 		(computations_ratio*(double)computations)/(memaccesses_ratio*(double)memoryoperations*sizeof(float)),
+// 		kernel_time_mad_sp,
+// 		(computations_ratio*(double)computations)/kernel_time_mad_sp*1000./(double)(1000*1000*1000),
+// 		(memaccesses_ratio*(double)memoryoperations*sizeof(float))/kernel_time_mad_sp*1000./(1000.*1000.*1000.),
+// 		(computations_ratio*(double)computations)/(memaccesses_ratio*(double)memoryoperations*sizeof(double)),
+// 		kernel_time_mad_dp,
+// 		(computations_ratio*(double)computations)/kernel_time_mad_dp*1000./(double)(1000*1000*1000),
+// 		(memaccesses_ratio*(double)memoryoperations*sizeof(double))/kernel_time_mad_dp*1000./(1000.*1000.*1000.),
+// 		(computations_ratio*(double)2*computations)/(memaccesses_ratio*(double)memoryoperations*sizeof(half2)),
+// 		kernel_time_mad_hp,
+// 		(computations_ratio*(double)2*computations)/kernel_time_mad_hp*1000./(double)(1000*1000*1000),
+// 		(memaccesses_ratio*(double)memoryoperations*sizeof(half2))/kernel_time_mad_hp*1000./(1000.*1000.*1000.),
+// 		(computations_ratio*(double)computations)/(memaccesses_ratio*(double)memoryoperations*sizeof(int)),
+// 		kernel_time_mad_int,
+// 		(computations_ratio*(double)computations)/kernel_time_mad_int*1000./(double)(1000*1000*1000),
+// 		(memaccesses_ratio*(double)memoryoperations*sizeof(int))/kernel_time_mad_int*1000./(1000.*1000.*1000.) );
 }
 
 extern "C" void mixbenchGPU(double *c, long size){
@@ -254,39 +255,43 @@ extern "C" void mixbenchGPU(double *c, long size){
 
 	runbench_warmup(cd, size);
 
-	runbench<32>(cd, size, doHalfs);
-	runbench<31>(cd, size, doHalfs);
-	runbench<30>(cd, size, doHalfs);
-	runbench<29>(cd, size, doHalfs);
-	runbench<28>(cd, size, doHalfs);
-	runbench<27>(cd, size, doHalfs);
-	runbench<26>(cd, size, doHalfs);
-	runbench<25>(cd, size, doHalfs);
-	runbench<24>(cd, size, doHalfs);
-	runbench<23>(cd, size, doHalfs);
-	runbench<22>(cd, size, doHalfs);
-	runbench<21>(cd, size, doHalfs);
-	runbench<20>(cd, size, doHalfs);
-	runbench<19>(cd, size, doHalfs);
-	runbench<18>(cd, size, doHalfs);
-	runbench<17>(cd, size, doHalfs);
-	runbench<16>(cd, size, doHalfs);
-	runbench<15>(cd, size, doHalfs);
-	runbench<14>(cd, size, doHalfs);
-	runbench<13>(cd, size, doHalfs);
-	runbench<12>(cd, size, doHalfs);
-	runbench<11>(cd, size, doHalfs);
-	runbench<10>(cd, size, doHalfs);
-	runbench<9>(cd, size, doHalfs);
-	runbench<8>(cd, size, doHalfs);
-	runbench<7>(cd, size, doHalfs);
-	runbench<6>(cd, size, doHalfs);
-	runbench<5>(cd, size, doHalfs);
-	runbench<4>(cd, size, doHalfs);
-	runbench<3>(cd, size, doHalfs);
-	runbench<2>(cd, size, doHalfs);
-	runbench<1>(cd, size, doHalfs);
-	runbench<0>(cd, size, doHalfs);
+// 	runbench<32>(cd, size, doHalfs);
+// 	runbench<31>(cd, size, doHalfs);
+// 	runbench<30>(cd, size, doHalfs);
+// 	runbench<29>(cd, size, doHalfs);
+// 	runbench<28>(cd, size, doHalfs);
+// 	runbench<27>(cd, size, doHalfs);
+// 	runbench<26>(cd, size, doHalfs);
+// 	runbench<25>(cd, size, doHalfs);
+// 	runbench<24>(cd, size, doHalfs);
+// 	runbench<23>(cd, size, doHalfs);
+// 	runbench<22>(cd, size, doHalfs);
+// 	runbench<21>(cd, size, doHalfs);
+// 	runbench<20>(cd, size, doHalfs);
+// 	runbench<19>(cd, size, doHalfs);
+// 	runbench<18>(cd, size, doHalfs);
+// 	runbench<17>(cd, size, doHalfs);
+// 	runbench<16>(cd, size, doHalfs);
+// 	runbench<15>(cd, size, doHalfs);
+// 	runbench<14>(cd, size, doHalfs);
+// 	runbench<13>(cd, size, doHalfs);
+// 	runbench<12>(cd, size, doHalfs);
+// 	runbench<11>(cd, size, doHalfs);
+// 	runbench<10>(cd, size, doHalfs);
+// 	runbench<9>(cd, size, doHalfs);
+// 	runbench<8>(cd, size, doHalfs);
+// 	runbench<7>(cd, size, doHalfs);
+// 	runbench<6>(cd, size, doHalfs);
+// 	runbench<5>(cd, size, doHalfs);
+// 	runbench<4>(cd, size, doHalfs);
+// 	runbench<3>(cd, size, doHalfs);
+// 	runbench<2>(cd, size, doHalfs);
+// 	runbench<1>(cd, size, doHalfs);
+	for (int i = 0; i < NUM_ITERATIONS; ++i)
+	{
+	    runbench<0>(cd, size, doHalfs);
+	}
+ 	
 
 	printf("--------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 
